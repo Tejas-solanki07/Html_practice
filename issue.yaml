@@ -1,0 +1,21 @@
+---
+- name: Ansible Playbook for Replacing
+  hosts: all
+  tasks:
+    - name: Replacing the Content
+      ansible.builtin.copy:
+        content: "development"
+        dest: /etc/issue
+      when: inventory_hostname in groups['dev']
+
+    - name: Replacing the content in test group
+      ansible.builtin.copy:
+        content: "Test"
+        dest: /etc/issue
+      when: inventory_hostname in groups['test']
+    
+    - name: Replacing the Content
+      ansible.builtin.copy:
+        content: "Productions"
+        dest: /etc/issue
+      when: inventory_hostname in groups['prod']
