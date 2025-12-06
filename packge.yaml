@@ -1,0 +1,24 @@
+---
+- name: Repository and Package Management
+  hosts: all
+  tasks:
+    - name: Ensure Packages
+      ansible.builtin.dnf:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - php
+        - mariadb
+      when: inventory_hostname in groups['dev'] or inventory_hostname in groups['prod'] or inventory_hostname in groups['test']
+      
+    - name: Install the RPM Development Tools
+      ansible.builtin.dnf:
+        name: "@RPM Development Tools"
+        state: present
+      when: inventory_hostname in groups['dev']
+
+    - name: Introduce all groups
+      ansible.builtin.dnf:
+        name: "*"
+        state: latest
+      when: inventory_hostname in groups['dev']
