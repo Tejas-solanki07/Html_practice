@@ -1,0 +1,26 @@
+---
+- name: create a repo
+  hosts: all
+  become: true
+
+  tasks:
+    
+    - name: configure baseos 
+      ansible.builtin.yum_repository:
+        name: baseos
+        description: EPEL YUM repo
+        file: external_repos
+        baseurl: file:///run/media/root/RHEL-9-6-0-BaseOS-x86_64/BaseOS
+        gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+        gpgcheck: yes
+        enabled: yes
+
+    - name: configure baseos
+      ansible.builtin.yum_repository:
+        name: appstream
+        description: EPEL YUM repo
+        file: external_repos
+        baseurl: file:///run/media/root/RHEL-9-6-0-BaseOS-x86_64/AppStream 
+        gpgkey: file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+        gpgcheck: yes
+        enabled: yes
