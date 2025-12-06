@@ -1,0 +1,31 @@
+---
+- name: Web Content Server
+  hosts: test
+  tasks:
+    - name: Checking the webtest group
+      ansible.builtin.group:
+        name: webtest
+        state: present
+
+    - name: Create the webtest directory
+      ansible.builtin.file:
+        state: directory
+        path: /webtest
+        mode: '2775'
+        group: webtest
+        setype: httpd_sys_content_t
+        owner: root
+
+    - name: Create a symlink
+      ansible.builtin.file:
+        src: /webtest
+        dest: /var/www/html/webtest
+        state: link
+        mode: '2775'
+        owner: root
+
+    - name: Create index file
+      ansible.builtin.copy:
+        dest: /webtest/index.html
+        owner: root
+        content: testing
