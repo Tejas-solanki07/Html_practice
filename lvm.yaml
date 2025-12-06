@@ -1,0 +1,33 @@
+---
+- name: make lvm
+  hosts: all
+  ignore_errors: true
+  tasks:
+    - name: make lv for 1500M
+      community.general.lvol:
+        vg: research
+        lv: data
+        size: 1500
+      when: ansible_lvm.vgs.research.free_g | float >= 1.5
+
+    - name: msg for vg
+      ansible.builtin.debug:
+        msg: "vg not found"
+      when: ansible_lvm.vgs.research is not defined
+
+    - name: msg for lv
+      ansible.builtin.debug:
+        msg: "Insufficient Space"
+      when: ansible_lvm.vgs.research.free_g | float < 1.5
+
+    - name: make lv for 800M
+      community.general.lvol:
+        vg: research
+        lv: data
+        size: 800
+      when: ansible_lvm.vgs.research.free_g | float < 1.5
+
+    - name: format the partition
+      community.general.filesystem:
+        fstype: ext4
+        dev: /dev/research/data
